@@ -9,15 +9,11 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import FileUpload from './routes/FileUpload';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
-    children: [
-      {index: true, element: <FileUpload/>},
-    ]
   },
 ]);
 
