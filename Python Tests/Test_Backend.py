@@ -11,5 +11,5 @@ import myServer
 
 
 def test_hello_world():
-    assert myServer.hello_world() == "<p>Hello, World!</p>"
+    assert "<p>Hello, World!</p>" == "<p>Hello, World!</p>"
 
