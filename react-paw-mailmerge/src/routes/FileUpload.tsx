@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import InfoCard from '../components/InfoCard';
 
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -21,6 +22,7 @@ const FileUpload: React.FC = () => {
 
   return (
     <div>
+        <InfoCard/>
         <div id='file-upload'>
             <h1>Upload CSV File</h1>
             <Form>
