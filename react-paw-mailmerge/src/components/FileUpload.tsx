@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import InfoCard from '../components/InfoCard';
+import InfoCard from './InfoCard';
 
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

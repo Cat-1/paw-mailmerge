@@ -3,8 +3,8 @@ import '../App.css';
 import NavBar from '../components/NavBar';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import FileUpload from './FileUpload';
-import WriteTemplate from './WriteTemplate';
+import FileUpload from '../components/FileUpload';
+import WriteTemplate from '../components/WriteTemplate';
 
 function App() {
   const [key, setKey] = useState<string>('file-upload');
