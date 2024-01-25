@@ -5,6 +5,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import FileUpload from '../components/FileUpload';
 import WriteTemplate from '../components/WriteTemplate';
+import ViewOutput from '../components/ViewOutput';
 
 function App() {
   const [key, setKey] = useState<string>('file-upload');
@@ -27,8 +28,8 @@ function App() {
           <Tab eventKey="template" title="Compose Template">
             <WriteTemplate/>
           </Tab>
-          <Tab eventKey="output" title="View Output" disabled>
-            Tab content for Contact
+          <Tab eventKey="output" title="View Output">
+            <ViewOutput/>
           </Tab>
         </Tabs>
       </div>
