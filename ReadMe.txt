@@ -12,4 +12,4 @@ py -3 -m venv .venv
 pip install Flask
 
 Run Application:
-flask.exe --app main run
+flask.exe --app .\Server\myServer run
