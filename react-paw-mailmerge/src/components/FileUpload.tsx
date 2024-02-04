@@ -38,7 +38,7 @@ const FileUpload: React.FC = () => {
       if (errors.length === 0) {
         // proceed to CSV parsing.
         var options = new CsvOptions();
-        options.dataHasHeader = dataHasHeader;
+        options.header = dataHasHeader; // this may need to be adjusted
         //TODO: Write actual callbacks that do something with the result
         ParseCsv(selectedFile, options, (result) => console.log(result), (message, obj) => {
           console.error(message);
