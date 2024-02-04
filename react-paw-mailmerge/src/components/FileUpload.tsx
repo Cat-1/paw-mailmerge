@@ -11,10 +11,33 @@ const FileUpload: React.FC = () => {
     setSelectedFile(file || null);
   };
 
+  const validateFile = (file: File): string[] => {
+    const errors: string[] = [];
+    const type = file.type;
+    const size_limit = 10 * 1024 * 1024;  // file.size is in bytes. 10 mb = 10 * 1024 * 1024 bytes
+
+    if (type !== 'text/csv') {
+      errors.push(`Expected file with MIME type text/csv, got ${type}.`);
+    }
+    if (file.size === 0) {
+      errors.push("File cannot be empty.");
+    }
+    if (file.size > size_limit) {
+      errors.push("File size cannot exceed 10 megabytes.");
+    }
+    return errors;
+  }
+
   const handleFileUpload = () => {
     if (selectedFile) {
       console.log('Uploading file:', selectedFile);
-      // parse the CSV and store the parser output as some kind of global state in the react app.
+
+      const errors = validateFile(selectedFile);
+      if (errors.length === 0) {
+        // proceed to CSV parsing.
+      } else {
+        console.error(errors);
+      }
     } else {
       console.error('No file selected.');
     }
