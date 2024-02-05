@@ -5,6 +5,15 @@ import InfoCard from './InfoCard';
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
+  const [nullFieldOption, setNullFieldOption] = useState<string>('ignore');
+
+  const getParserOpts = (): Object => {
+    const opts = {
+      header: dataHasHeader,
+      nullField: nullFieldOption,
+    };
+    return opts;
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -61,6 +70,27 @@ const FileUpload: React.FC = () => {
                             checked={dataHasHeader}
                             onChange={() => {setDataHasHeader(!dataHasHeader)}}
                     />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Empty field parsing option: </Form.Label>
+                  <div className='mb-3'>
+                    <Form.Check
+                      inline
+                      type='radio'
+                      value='ignore'
+                      label='Parse as empty string'
+                      checked={nullFieldOption === 'ignore'}
+                      onChange={(event) => {setNullFieldOption(event.target.value)}}
+                    />
+                    <Form.Check
+                      inline
+                      type='radio'
+                      value='replace'
+                      label='Replace with N/A'
+                      checked={nullFieldOption === 'replace'}
+                      onChange={(event) => {setNullFieldOption(event.target.value)}}
+                    />
+                  </div>
                 </Form.Group>
                 <Button onClick={handleFileUpload}>Upload File</Button>
             </Form>
