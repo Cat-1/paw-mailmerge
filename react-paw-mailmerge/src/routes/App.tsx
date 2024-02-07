@@ -8,10 +8,9 @@ import WriteTemplate from '../components/WriteTemplate';
 import ViewOutput from '../components/ViewOutput';
 
 function App() {
-  const [key, setKey] = useState<string>('file-upload');
-
-  // probably need to lift parsed CSV data and the template string up to this level
-  // then process the data and pass them down to the components as props
+  const [key, setKey] = useState<string>('file-upload');  // maintains state for the UI tabs
+  const [parsedData, setParsedData] = useState<object[] | null>(null);  // output of the CSV parser function
+  const [template, setTemplate] = useState<string>("");  // mail merge template
 
   return (
     <div>
@@ -23,18 +22,17 @@ function App() {
         className="mb-3"
         >
           <Tab eventKey="file-upload" title="Upload CSV">
-            <FileUpload/>
+            <FileUpload setParsedData={setParsedData}/>
           </Tab>
           <Tab eventKey="template" title="Compose Template">
-            <WriteTemplate/>
+            <WriteTemplate parsedData={parsedData} template={template} setTemplate={setTemplate}/>
           </Tab>
           <Tab eventKey="output" title="View Output">
-            <ViewOutput/>
+            <ViewOutput parsedData={parsedData} template={template}/>
           </Tab>
         </Tabs>
       </div>
     </div>
-    
   );
 }
 

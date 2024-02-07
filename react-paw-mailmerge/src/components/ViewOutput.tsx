@@ -1,6 +1,11 @@
 import React from "react";
 
-const ViewOutput: React.FC = () => {
+interface ViewOutputProps {
+    parsedData: object[] | null;
+    template: string | null;
+}
+
+const ViewOutput: React.FC<ViewOutputProps> = ({parsedData, template}) => {
 
     return (
         <div>
