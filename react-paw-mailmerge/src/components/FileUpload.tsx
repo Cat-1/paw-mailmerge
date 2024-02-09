@@ -1,12 +1,12 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import InfoCard from './InfoCard';
-import { CsvOptions, NullFieldOptionEnum, ParseCsv } from '../Helpers/CsvFunctions';
+import { CsvOptions, ParseCsv } from '../Helpers/CsvFunctions';
 
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
-  const [nullFieldOption, setNullFieldOption] = useState<string>(NullFieldOptionEnum.Ignore);
+  const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
 
   const getParserOpts = (): CsvOptions => {
     const opts = {
@@ -25,11 +25,11 @@ const FileUpload: React.FC = () => {
     const errors: string[] = [];
     const type = file.type;
     const size_limit = 10 * 1024 * 1024;  // file.size is in bytes. 10 mb = 10 * 1024 * 1024 bytes
-/*
+
     if (type !== 'text/csv') {
       errors.push(`Expected file with MIME type text/csv, got ${type}.`);
     }
-    */
+    
     if (file.size === 0) {
       errors.push("File cannot be empty.");
     }
@@ -86,17 +86,17 @@ const FileUpload: React.FC = () => {
                     <Form.Check
                       inline
                       type='radio'
-                      value='ignore'
+                      value='Ignore'
                       label='Parse as empty string'
-                      checked={nullFieldOption === NullFieldOptionEnum.Ignore}
+                      checked={nullFieldOption === 'Ignore'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
                     />
                     <Form.Check
                       inline
                       type='radio'
-                      value='replace'
+                      value='Replace'
                       label='Replace with N/A'
-                      checked={nullFieldOption === NullFieldOptionEnum.ReplaceWithNa}
+                      checked={nullFieldOption === 'Replace'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
                     />
                   </div>
