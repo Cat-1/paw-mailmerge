@@ -3,14 +3,14 @@ import { parse, ParseLocalConfig, ParseResult } from 'papaparse';
 const NULL_VAL_REPLACEMENT = "NA";
 
 export enum NullFieldOptionEnum{
-    Ignore,
-    ReplaceWithNa
+    Ignore = "Ignore",
+    ReplaceWithNa = "Replace"
 }
 
 export interface CsvOptions {
     header: boolean;
-    nullFieldOption: NullFieldOptionEnum;
-}
+    nullField: NullFieldOptionEnum;
+};
 
 export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: Array<object>) => any, reject:(s:string, o: object) => any)
 {
@@ -55,7 +55,7 @@ function NormalizeJsonObjectResult(results:ParseResult<object>, options:CsvOptio
         results["data"].forEach( (rowObj) => {
             let rowMap = new Map<string, any>();
             Object.entries(rowObj).forEach(([key, val]) => {
-                rowMap.set(key, HandleNullValues(val, options.nullFieldOption)); // we need to turn this into a Map so we can modify properties in a dynamic object
+                rowMap.set(key, HandleNullValues(val, options.nullField)); // we need to turn this into a Map so we can modify properties in a dynamic object
             });
             result.push(Object.fromEntries(rowMap)); // convert from map to object for faster indexing in
         });
@@ -67,7 +67,7 @@ function NormalizeJsonObjectResult(results:ParseResult<object>, options:CsvOptio
             const rowObj = new Map(); // Have to use a map in order to dynamically add properties to the same object
             rowArray.forEach((val, index) => {
                 const propName = "Col " + (index + 1).toString(); // go from 0-index to 1-index
-                rowObj.set(propName, HandleNullValues(val, options.nullFieldOption));
+                rowObj.set(propName, HandleNullValues(val, options.nullField));
             })
             return Object.fromEntries(rowObj);
         })
