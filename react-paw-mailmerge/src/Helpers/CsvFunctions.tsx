@@ -7,14 +7,9 @@ export enum NullFieldOptionEnum{
     ReplaceWithNa
 }
 
-export class CsvOptions {
+export interface CsvOptions {
     header: boolean;
     nullFieldOption: NullFieldOptionEnum;
-
-    constructor(){
-        this.header = false;
-        this.nullFieldOption = NullFieldOptionEnum.Ignore;
-    }
 }
 
 export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: Array<object>) => any, reject:(s:string, o: object) => any)
