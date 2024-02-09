@@ -6,6 +6,15 @@ import { CsvOptions, ParseCsv } from '../Helpers/CsvFunctions';
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
+  const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
+
+  const getParserOpts = (): CsvOptions => {
+    const opts = {
+      header: dataHasHeader,
+      nullField: nullFieldOption,
+    };
+    return opts as CsvOptions;
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
@@ -17,8 +26,8 @@ const FileUpload: React.FC = () => {
     const type = file.type;
     const size_limit = 10 * 1024 * 1024;  // file.size is in bytes. 10 mb = 10 * 1024 * 1024 bytes
 
-    if (type !== 'text/csv' && type !== 'application/vnd.ms-excel') {
-       errors.push(`Expected file with MIME type text/csv or application/vnd.ms-excel, got ${type}.`);
+    if (type !== 'text/csv') {
+      errors.push(`Expected file with MIME type text/csv, got ${type}.`);
     }
     
     if (file.size === 0) {
@@ -37,8 +46,7 @@ const FileUpload: React.FC = () => {
       const errors = validateFile(selectedFile);
       if (errors.length === 0) {
         // proceed to CSV parsing.
-        var options = new CsvOptions();
-        options.dataHasHeader = dataHasHeader;
+        var options = getParserOpts(); // this may need to be adjusted
         //TODO: Write actual callbacks that do something with the result
         ParseCsv(selectedFile, options, (result) => console.log(result), (message, obj) => {
           console.error(message);
@@ -71,6 +79,27 @@ const FileUpload: React.FC = () => {
                             checked={dataHasHeader}
                             onChange={() => {setDataHasHeader(!dataHasHeader)}}
                     />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Empty field parsing option: </Form.Label>
+                  <div className='mb-3'>
+                    <Form.Check
+                      inline
+                      type='radio'
+                      value='Ignore'
+                      label='Parse as empty string'
+                      checked={nullFieldOption === 'Ignore'}
+                      onChange={(event) => {setNullFieldOption(event.target.value)}}
+                    />
+                    <Form.Check
+                      inline
+                      type='radio'
+                      value='Replace'
+                      label='Replace with N/A'
+                      checked={nullFieldOption === 'Replace'}
+                      onChange={(event) => {setNullFieldOption(event.target.value)}}
+                    />
+                  </div>
                 </Form.Group>
                 <Button onClick={handleFileUpload}>Upload File</Button>
             </Form>
