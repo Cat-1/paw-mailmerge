@@ -33,6 +33,11 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
             <Form onSubmit={handleTemplateSubmit}>
                 <Form.Group className="mb-3">
                     <Form.Label>Compose Template</Form.Label>
+                    <div className="mb-3">
+                        <Button type="button" className="me-2" onClick={handleTemplateSubmit} hidden={!editingEnabled}>Save Template</Button>
+                        <Button type="button" variant="danger" onClick={handleTemplateDiscardChanges} hidden={!editingEnabled || previousInput === currentInput}>Discard Changes</Button>
+                        <Button type="button" variant="warning" onClick={() => {setEditingEnabled(true)}} hidden={editingEnabled}>Edit Template</Button>
+                    </div>
                     <Form.Control 
                         value={currentInput}
                         onChange={handleTemplateChange}
@@ -42,11 +47,6 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
                         disabled={!editingEnabled}
                     />
                 </Form.Group>
-                <div>
-                    <Button type="button" className="me-2" onClick={handleTemplateSubmit} hidden={!editingEnabled}>Save Template</Button>
-                    <Button type="button" variant="danger" onClick={handleTemplateDiscardChanges} hidden={!editingEnabled || previousInput === currentInput}>Discard Changes</Button>
-                    <Button type="button" variant="warning" onClick={() => {setEditingEnabled(true)}} hidden={editingEnabled}>Edit Template</Button>
-                </div>
             </Form>
         </div>
     )
