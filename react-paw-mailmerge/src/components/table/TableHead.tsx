@@ -5,10 +5,12 @@ interface TableHeadProps {
 }
 const TableHead: React.FC<TableHeadProps> = ({keys}) => {
     return (
-        <tr key='table-head'>
-            {keys.map((key) => (<th key={key}>{key}</th>))}
-            <th>Action</th>
-        </tr>
+        <thead>
+            <tr key='table-head'>
+                {keys.map((key) => (<th key={key}>{key}</th>))}
+                <th>Action</th>
+            </tr>
+        </thead>
     )
 }
 

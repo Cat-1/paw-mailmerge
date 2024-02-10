@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import Table from "react-bootstrap/Table";
-import TableHead from "./table/TableHead";
-import TableRow from "./table/TableRow";
-import Pagination from 'react-bootstrap/Pagination';
+import React from "react";
+import TableOutput from "./table/TableOutput";
 
 interface ViewOutputProps {
     parsedData: object[] | null;
-    template: string | null;
+    template: string;
 }
 
 const fakeData: Record<string , any>[] = [
@@ -50,44 +47,11 @@ const fakeData: Record<string , any>[] = [
 ];
 
 const ViewOutput: React.FC<ViewOutputProps> = ({parsedData, template}) => {
-    
-    // pagination
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-    const ItemsPerPage = 10;
-    const indexOfLastItem = currentPage * ItemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - ItemsPerPage;
-    const currentItems = fakeData.slice(indexOfFirstItem, indexOfLastItem);
-
-    const paginationItems = [];
-    for (let pageNum = 1; pageNum  <= Math.ceil(fakeData.length / ItemsPerPage); pageNum++) {
-        paginationItems.push(
-            <Pagination.Item key={pageNum} active={pageNum === currentPage} onClick={() => handlePageChange(pageNum)}>
-                {pageNum}
-            </Pagination.Item>,
-        )
-    }
-
-    // limit the number of columns displayed
-    const MaxColumnCount = 5;
-    const keys = Object.keys(fakeData[0]).slice(0, Math.min(MaxColumnCount, Object.keys(fakeData).length))
 
     return (
         <div>
             <h1>Mail Merge Output</h1>
-            <Table striped bordered hover>
-                <thead>
-                    <TableHead keys={keys}/>
-                </thead>
-                <tbody>
-                    {currentItems.map((item, index) => (<TableRow keys={keys} rowData={item} index={index}/>))}
-                </tbody>
-            </Table>
-            <Pagination>
-                {paginationItems}
-            </Pagination>
+            <TableOutput data={fakeData} template={template}/>
         </div>
     )
 }

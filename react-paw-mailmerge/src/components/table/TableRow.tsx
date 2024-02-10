@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "react-bootstrap/Button"
 
 interface TableRowProps {
     rowData: Record<string, any>;
@@ -9,9 +10,11 @@ const TableRow: React.FC<TableRowProps> = ({rowData, index, keys}) => {
 
     return (
         <tr key={index}>
-            {keys.map((key) => (<td key={key}>{rowData[key]}</td>))}
+            {keys.map(
+                (key) => (<td key={key}>{rowData[key]}</td>)
+                )}
             <td>
-                <button>View Result</button>
+                <Button type='button'>View Result</Button>
             </td>
         </tr>
     )
