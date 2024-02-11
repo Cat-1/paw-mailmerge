@@ -1,13 +1,14 @@
 import React from "react";
 
 interface TableHeadProps {
-    keys: string[];
+    colNames: string[];
 }
-const TableHead: React.FC<TableHeadProps> = ({keys}) => {
+
+const TableHead: React.FC<TableHeadProps> = ({colNames}) => {
     return (
         <thead>
             <tr key='table-head'>
-                {keys.map((key) => (<th key={key}>{key}</th>))}
+                {colNames.map((colName) => (<th key={colName}>{colName}</th>))}
                 <th>Action</th>
             </tr>
         </thead>

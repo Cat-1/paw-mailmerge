@@ -3,15 +3,15 @@ import Button from "react-bootstrap/Button"
 
 interface TableRowProps {
     rowData: Record<string, any>;
-    index: number;
-    keys: string[];
+    colNames: string[];
 }
-const TableRow: React.FC<TableRowProps> = ({rowData, index, keys}) => {
+
+const TableRow: React.FC<TableRowProps> = ({rowData, colNames}) => {
 
     return (
-        <tr key={index}>
-            {keys.map(
-                (key) => (<td key={key}>{rowData[key]}</td>)
+        <tr key={JSON.stringify(rowData)}>
+            {colNames.map(
+                (colName) => (<td key={colName}>{rowData[colName]}</td>)
                 )}
             <td>
                 <Button type='button'>View Result</Button>

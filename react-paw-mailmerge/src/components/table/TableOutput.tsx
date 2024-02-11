@@ -15,6 +15,7 @@ const TableOutput: React.FC<TableOutputProps> = ({data}) => {
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
+
     const ItemsPerPage = 10;
     const indexOfLastItem = currentPage * ItemsPerPage;
     const indexOfFirstItem = indexOfLastItem - ItemsPerPage;
@@ -31,14 +32,14 @@ const TableOutput: React.FC<TableOutputProps> = ({data}) => {
 
     // limit the number of columns displayed
     const MaxColumnCount = 5;
-    const keys = Object.keys(data[0]).slice(0, Math.min(MaxColumnCount, Object.keys(data).length))
+    const colNamesTruncated = Object.keys(data[0]).slice(0, MaxColumnCount)
 
     return (
         <div>
             <Table striped bordered hover>
-                <TableHead keys={keys}/>
+                <TableHead colNames={colNamesTruncated}/>
                 <tbody>
-                    {currentItems.map((item, index) => (<TableRow keys={keys} rowData={item} index={index}/>))}
+                    {currentItems.map((item, index) => (<TableRow key={index} colNames={colNamesTruncated} rowData={item}/>))}
                 </tbody>
             </Table>
             <Pagination>
