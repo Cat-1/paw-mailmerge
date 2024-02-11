@@ -6,14 +6,14 @@ import { CsvOptions, ParseCsv } from '../Helpers/CsvFunctions';
 const FileUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
-  const [nullFieldOption, setNullFieldOption] = useState<string>('ignore');
+  const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
 
-  const getParserOpts = (): Object => {
+  const getParserOpts = (): CsvOptions => {
     const opts = {
       header: dataHasHeader,
       nullField: nullFieldOption,
     };
-    return opts;
+    return opts as CsvOptions;
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -26,8 +26,8 @@ const FileUpload: React.FC = () => {
     const type = file.type;
     const size_limit = 10 * 1024 * 1024;  // file.size is in bytes. 10 mb = 10 * 1024 * 1024 bytes
 
-    if (type !== 'text/csv' && type !== 'application/vnd.ms-excel') {
-       errors.push(`Expected file with MIME type text/csv or application/vnd.ms-excel, got ${type}.`);
+    if (type !== 'text/csv') {
+      errors.push(`Expected file with MIME type text/csv, got ${type}.`);
     }
     
     if (file.size === 0) {
@@ -46,8 +46,7 @@ const FileUpload: React.FC = () => {
       const errors = validateFile(selectedFile);
       if (errors.length === 0) {
         // proceed to CSV parsing.
-        var options = new CsvOptions();
-        options.dataHasHeader = dataHasHeader;
+        var options = getParserOpts(); // this may need to be adjusted
         //TODO: Write actual callbacks that do something with the result
         ParseCsv(selectedFile, options, (result) => console.log(result), (message, obj) => {
           console.error(message);
@@ -87,17 +86,17 @@ const FileUpload: React.FC = () => {
                     <Form.Check
                       inline
                       type='radio'
-                      value='ignore'
+                      value='Ignore'
                       label='Parse as empty string'
-                      checked={nullFieldOption === 'ignore'}
+                      checked={nullFieldOption === 'Ignore'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
                     />
                     <Form.Check
                       inline
                       type='radio'
-                      value='replace'
+                      value='Replace'
                       label='Replace with N/A'
-                      checked={nullFieldOption === 'replace'}
+                      checked={nullFieldOption === 'Replace'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
                     />
                   </div>
