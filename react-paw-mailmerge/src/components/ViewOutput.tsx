@@ -1,7 +1,8 @@
 import React from "react";
+import { CsvResult } from "../Helpers/CsvFunctions";
 
 interface ViewOutputProps {
-    parsedData: object[] | null;
+    parsedData: CsvResult | null;
     template: string | null;
 }
 

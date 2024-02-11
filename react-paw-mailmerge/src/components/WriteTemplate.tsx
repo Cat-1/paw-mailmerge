@@ -1,9 +1,11 @@
 import React, { useState } from "react"
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
+import DynamicButton from './DynamicButton';
+import { CsvResult } from "../Helpers/CsvFunctions";
 
 interface WriteTemplateProps {
-    parsedData: object[] | null;
+    parsedData: CsvResult | null;
     template: string,
     setTemplate: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -12,6 +14,7 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     const [editingEnabled, setEditingEnabled] = useState<boolean>(true); // enable / disable form editing
     const [currentInput, setCurrentInput] = useState<string>('');
     const [previousInput, setPreviousInput] = useState<string>('');  // when form changes are discarded, restore to previousInput
+    
 
     const handleTemplateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentInput(event.target.value);
@@ -27,6 +30,25 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     const handleTemplateDiscardChanges = () => {
         setCurrentInput(previousInput);
     }
+
+    const addStringToTemplate = (field:string) => {
+        const markedUpValue = "{{"+field+"}}";
+        console.log(markedUpValue);
+        setCurrentInput(currentInput + markedUpValue);
+    }
+
+    const headers = ():Array<string> => {
+        let headers = [] as Array<string>;
+        if(parsedData !== null && parsedData.data.length > 0){
+            for(const prop in parsedData.data[0]){
+                headers.push(prop.toString());
+            }
+        }
+        return headers;
+    }
+    const buttons = parsedData?.header.map((x:string, i)=>{
+        return <Button type="button" value={x} onClick={() => addStringToTemplate(x)} key={i}>{x}</Button>;
+    });
 
     return (
         <div>
@@ -48,8 +70,9 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
                     />
                 </Form.Group>
             </Form>
+           <div >{buttons}</div>
         </div>
     )
 }
 
-export default WriteTemplate
+export default WriteTemplate;
