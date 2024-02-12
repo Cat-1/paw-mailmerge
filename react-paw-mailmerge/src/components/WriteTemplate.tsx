@@ -40,12 +40,7 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
 
     const addStringToTemplate = (field:string) => {
         const markedUpValue = "{{"+field+"}} "; 
-        console.log("1 CursorRef ", cursorRef.current)
-        console.log("1 template ", templateRef.current?.selectionStart);
-
-        let cursorPosition = cursorRef.current ?? templateRef.current?.selectionStart ?? 0;
-
-        console.log("Cursor Position ", cursorPosition);
+        let cursorPosition = cursorRef.current ?? templateRef.current?.selectionStart ?? 0; // we need this in case someone presses two buttons without clicking back into the textbox
         const substring1 = currentInput.substring(0, cursorPosition);
         const substring2 = currentInput.substring(cursorPosition);
         setCurrentInput(substring1 + markedUpValue + substring2);
@@ -53,20 +48,6 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         //update cursorRef and templateRef
         cursorRef.current = cursorPosition + markedUpValue.length;
         templateRef.current?.setSelectionRange(cursorPosition + markedUpValue.length, cursorPosition + markedUpValue.length);
-        console.log("2 CursorRef ", cursorRef.current)
-        console.log("2 template ", templateRef.current?.selectionStart);
-
-      //  if(templateRef !== null && templateRef.current !== null){ // referred to ChatGPT for this functionality 
-            
-           
-            // update cursor location 
-          //  templateRef.current.setSelectionRange(cursorPosition + markedUpValue.length, cursorPosition + markedUpValue.length); 
-        
-        /*}
-        else{
-            setCurrentInput(currentInput + markedUpValue);
-        }
-        */
     }
 
     const headers = ():Array<string> => {
