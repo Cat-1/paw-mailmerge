@@ -22,6 +22,9 @@ export class CsvResult {
     data = new Array<object>();
 }
 
+// this is where papaparse extracts more columns than we have header rows
+export const EXTRA_COLUMNS = "__parsed_extra";
+
 export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: CsvResult) => any, reject:(s:string, o: object) => any)
 {
     const config = 
@@ -49,7 +52,6 @@ export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: CsvResult
 
 function HandleNullValues(val: any, nullFieldOption : NullFieldOptionEnum) : any
 {
-    console.log("Handle Null Value ", val);
     if(val === null || val === ""){
         if(nullFieldOption === NullFieldOptionEnum.Ignore){
             return "";
@@ -100,8 +102,6 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
             })
             return Object.fromEntries(rowObj);
         })
-        
-
     }
     result.header = GetHeaders(result.data[0]);
    return result;
