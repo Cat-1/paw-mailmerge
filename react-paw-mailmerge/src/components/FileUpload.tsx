@@ -3,7 +3,11 @@ import { Button, Form } from 'react-bootstrap';
 import InfoCard from './InfoCard';
 import { CsvOptions, ParseCsv } from '../Helpers/CsvFunctions';
 
-const FileUpload: React.FC = () => {
+interface FileUploadProps {
+  setParsedData: React.Dispatch<React.SetStateAction<object[] | null>>;
+}
+
+const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
   const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');

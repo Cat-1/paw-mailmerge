@@ -1,17 +1,21 @@
-import React, { useState } from "react"
+import React from "react"
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
 
+interface WriteTemplateProps {
+    parsedData: object[] | null;
+    template: string,
+    setTemplate: React.Dispatch<React.SetStateAction<string>>;
+}
 
-const WriteTemplate: React.FC = () => {
-    const [templateValue, setTemplateValue] = useState<string>('');
+const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate}) => {
 
     const handleTemplateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTemplateValue(event.target.value);
+        setTemplate(event.target.value);
     }
 
     const handleTemplateSubmit = () => {
-        console.log("Submitting template:", templateValue)
+        console.log("Submitting template:", template)
     }
 
     return (
@@ -20,7 +24,7 @@ const WriteTemplate: React.FC = () => {
                 <Form.Group className="mb-3">
                     <Form.Label>Compose Template</Form.Label>
                     <Form.Control 
-                        value={templateValue}
+                        value={template}
                         onChange={handleTemplateChange}
                         placeholder="Hello {{name}}, ..."
                         as="textarea" 
