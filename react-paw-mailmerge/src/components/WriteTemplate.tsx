@@ -1,7 +1,6 @@
-import React, { useState, useRef, ChangeEvent, MouseEventHandler } from "react"
+import React, { useState, useRef } from "react"
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
-import DynamicButton from './DynamicButton';
 import { CsvResult, EXTRA_COLUMNS } from "../Helpers/CsvFunctions";
 
 interface WriteTemplateProps {
@@ -50,20 +49,11 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         templateRef.current?.setSelectionRange(cursorPosition + markedUpValue.length, cursorPosition + markedUpValue.length);
     }
 
-    const headers = ():Array<string> => {
-        let headers = [] as Array<string>;
-        if(parsedData !== null && parsedData.data.length > 0){
-            for(const prop in parsedData.data[0]){
-                headers.push(prop.toString()); 
-            }
-        }
-        return headers; // Do we want to sort this alphabetically or just display in order of appearance?
-    }
     const buttons = parsedData?.header.map((field:string, index)=>{
         if(field !== EXTRA_COLUMNS){
-            return <Button type="button" value={field} onClick={() => addStringToTemplate(field)} key={index}>{field}</Button>;
+            return <Button type="button" value={field} onClick={() => addStringToTemplate(field)} key={index} id="{index}-button">{field}</Button>;
         }
-    
+        return "";
     });
 
     return (

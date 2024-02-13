@@ -12,11 +12,6 @@ export interface CsvOptions {
     nullField: NullFieldOptionEnum;
 };
 
-export interface CsvData{
-    key: string;
-    value: any;
-}
-
 export class CsvResult {
     header = new Array<string>();
     data = new Array<object>();
@@ -38,11 +33,6 @@ export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: CsvResult
             console.error("Errors:", results, file);
             reject("There was an error", results);
         },
-        transform: function(value: string, field: string|number):any {
-            if(!options.header){
-                return { key: "Col " + field, value: value} as CsvData;
-            }
-            else return { key: field, value: value} as CsvData} ,
         header: options.header,
         skipEmptyLines: true
     } as ParseLocalConfig<unknown, File>;
@@ -73,11 +63,6 @@ function GetHeaders(rowObj:object) : Array<string>{
     return result;
 }
 
-function HandleCsvData(obj:CsvData, options:CsvOptions):CsvData{
-    obj.value = HandleNullValues(obj.value, options.nullField);
-    return obj;
-}
-
 function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOptions) : CsvResult
 {
     let result = new CsvResult();
@@ -86,7 +71,7 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
         parsedCsv["data"].forEach( (rowObj) => {
             let rowMap = new Map<string, any>();
             Object.entries(rowObj).forEach(([key, val], index) => {
-                rowMap.set(key, HandleCsvData(val, options)); // we need to turn this into a Map so we can modify properties in a dynamic object
+                rowMap.set(key, HandleNullValues(val, options.nullField)); // we need to turn this into a Map so we can modify properties in a dynamic object
             });
             result.data.push(Object.fromEntries(rowMap)); // convert from map to object for faster indexing in
         });
@@ -98,7 +83,7 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
             const rowObj = new Map(); // Have to use a map in order to dynamically add properties to the same object
             rowArray.forEach((val, index) => {
                 const propName = "Col " + (index + 1).toString(); // go from 0-index to 1-index
-                rowObj.set(propName, HandleCsvData(val, options));
+                rowObj.set(propName, HandleNullValues(val, options.nullField));
             })
             return Object.fromEntries(rowObj);
         })

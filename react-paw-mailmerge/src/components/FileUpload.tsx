@@ -51,7 +51,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
       if (errors.length === 0) {
         // proceed to CSV parsing.
         var options = getParserOpts(); // this may need to be adjusted
-        //TODO: Write actual callbacks that do something with the result
+        //TODO: Write Error callbacks
         ParseCsv(selectedFile, options, (result) => { setParsedData(result); console.log(result)}, (message, obj) => {
           console.error(message);
           console.error(obj);
