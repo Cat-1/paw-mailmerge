@@ -5,11 +5,12 @@ import TableRow from "./TableRow";
 import Pagination from 'react-bootstrap/Pagination';
 
 interface TableOutputProps {
+    header: string[];
     data: Record<string, any>[];
     template: string;
 }
 
-const TableOutput: React.FC<TableOutputProps> = ({data}) => {
+const TableOutput: React.FC<TableOutputProps> = ({header, data, template}) => {
     // pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
     const handlePageChange = (page: number) => {
@@ -32,8 +33,9 @@ const TableOutput: React.FC<TableOutputProps> = ({data}) => {
 
     // limit the number of columns displayed
     const MaxColumnCount = 5;
-    const colNamesTruncated = Object.keys(data[0]).slice(0, MaxColumnCount)
-
+    const colNamesTruncated = header.slice(0, MaxColumnCount)
+    // TODO: filter out _parsed_extras
+    
     return (
         <div>
             <Table striped bordered hover>
