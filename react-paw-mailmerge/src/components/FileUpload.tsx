@@ -1,10 +1,10 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import InfoCard from './InfoCard';
-import { CsvOptions, ParseCsv } from '../Helpers/CsvFunctions';
+import { CsvOptions, CsvResult, ParseCsv } from '../Helpers/CsvFunctions';
 
 interface FileUploadProps {
-  setParsedData: React.Dispatch<React.SetStateAction<object[] | null>>;
+  setParsedData: React.Dispatch<React.SetStateAction<CsvResult | null>>;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
@@ -30,8 +30,8 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
     const type = file.type;
     const size_limit = 10 * 1024 * 1024;  // file.size is in bytes. 10 mb = 10 * 1024 * 1024 bytes
 
-    if (type !== 'text/csv') {
-      errors.push(`Expected file with MIME type text/csv, got ${type}.`);
+    if (!(type === 'text/csv' || type === 'application/vnd.ms-excel' || type === 'text/plain')) {
+      errors.push(`Unexpected MIME type, got ${type}.`);
     }
     
     if (file.size === 0) {
@@ -51,8 +51,8 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
       if (errors.length === 0) {
         // proceed to CSV parsing.
         var options = getParserOpts(); // this may need to be adjusted
-        //TODO: Write actual callbacks that do something with the result
-        ParseCsv(selectedFile, options, (result) => console.log(result), (message, obj) => {
+        //TODO: Write Error callbacks
+        ParseCsv(selectedFile, options, (result) => { setParsedData(result); console.log(result)}, (message, obj) => {
           console.error(message);
           console.error(obj);
         });

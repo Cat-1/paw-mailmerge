@@ -12,7 +12,15 @@ export interface CsvOptions {
     nullField: NullFieldOptionEnum;
 };
 
-export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: Array<object>) => any, reject:(s:string, o: object) => any)
+export class CsvResult {
+    header = new Array<string>();
+    data = new Array<object>();
+}
+
+// this is where papaparse extracts more columns than we have header rows
+export const EXTRA_COLUMNS = "__parsed_extra";
+
+export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: CsvResult) => any, reject:(s:string, o: object) => any)
 {
     const config = 
     {
@@ -34,7 +42,7 @@ export function ParseCsv(myFile:File, options:CsvOptions, resolve: (s: Array<obj
 
 function HandleNullValues(val: any, nullFieldOption : NullFieldOptionEnum) : any
 {
-    if(val === null){
+    if(val === null || val === ""){
         if(nullFieldOption === NullFieldOptionEnum.Ignore){
             return "";
         }
@@ -47,22 +55,30 @@ function HandleNullValues(val: any, nullFieldOption : NullFieldOptionEnum) : any
     }
 }
 
-function NormalizeJsonObjectResult(results:ParseResult<object>, options:CsvOptions) : Array<object>
+function GetHeaders(rowObj:object) : Array<string>{
+    let result = [] as Array<string>;
+    for(const prop in rowObj){
+        result.push(prop);
+    }
+    return result;
+}
+
+function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOptions) : CsvResult
 {
-    let result = [] as Array<object>;
+    let result = new CsvResult();
     if(options.header){
         // results["data"] is an array of objects 
-        results["data"].forEach( (rowObj) => {
+        parsedCsv["data"].forEach( (rowObj) => {
             let rowMap = new Map<string, any>();
-            Object.entries(rowObj).forEach(([key, val]) => {
+            Object.entries(rowObj).forEach(([key, val], index) => {
                 rowMap.set(key, HandleNullValues(val, options.nullField)); // we need to turn this into a Map so we can modify properties in a dynamic object
             });
-            result.push(Object.fromEntries(rowMap)); // convert from map to object for faster indexing in
+            result.data.push(Object.fromEntries(rowMap)); // convert from map to object for faster indexing in
         });
-        return result;
+
     }
     else{ // we need to convert an array of arrays into an array of objects
-        result = results["data"].map( (row) => {
+        result.data = parsedCsv["data"].map( (row) => {
             const rowArray = row as Array<any>; // we don't want to lose dynamic typing
             const rowObj = new Map(); // Have to use a map in order to dynamically add properties to the same object
             rowArray.forEach((val, index) => {
@@ -71,8 +87,9 @@ function NormalizeJsonObjectResult(results:ParseResult<object>, options:CsvOptio
             })
             return Object.fromEntries(rowObj);
         })
-        return result; 
     }
+    result.header = GetHeaders(result.data[0]);
+   return result;
 }
 
   export default ParseCsv;
