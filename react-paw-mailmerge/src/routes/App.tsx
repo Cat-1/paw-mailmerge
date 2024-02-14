@@ -6,10 +6,11 @@ import Tabs from 'react-bootstrap/Tabs';
 import FileUpload from '../components/FileUpload';
 import WriteTemplate from '../components/WriteTemplate';
 import ViewOutput from '../components/ViewOutput';
+import { CsvResult } from '../Helpers/CsvFunctions';
 
 function App() {
   const [key, setKey] = useState<string>('file-upload');  // maintains state for the UI tabs
-  const [parsedData, setParsedData] = useState<object[] | null>(null);  // output of the CSV parser function
+  const [parsedData, setParsedData] = useState<CsvResult | null>(null);  // output of the CSV parser function
   const [template, setTemplate] = useState<string>("");  // mail merge template
 
   return (
