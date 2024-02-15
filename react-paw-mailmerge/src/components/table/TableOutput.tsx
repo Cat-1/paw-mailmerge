@@ -10,6 +10,9 @@ interface TableOutputProps {
     template: string;
 }
 
+const MaxColumnCount = 5;  // limits the number of columns displayed
+const ItemsPerPage = 10;
+
 const TableOutput: React.FC<TableOutputProps> = ({header, data, template}) => {
     // pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -17,7 +20,6 @@ const TableOutput: React.FC<TableOutputProps> = ({header, data, template}) => {
         setCurrentPage(page);
     };
 
-    const ItemsPerPage = 10;
     const indexOfLastItem = currentPage * ItemsPerPage;
     const indexOfFirstItem = indexOfLastItem - ItemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
@@ -31,17 +33,14 @@ const TableOutput: React.FC<TableOutputProps> = ({header, data, template}) => {
         )
     }
 
-    // limit the number of columns displayed
-    const MaxColumnCount = 5;
-    const colNamesTruncated = header.slice(0, MaxColumnCount)
-    // TODO: filter out _parsed_extras
-    
     return (
         <div>
             <Table striped bordered hover>
-                <TableHead colNames={colNamesTruncated}/>
+                <TableHead header={header} maxColumnCount={MaxColumnCount}/>
                 <tbody>
-                    {currentItems.map((item, index) => (<TableRow key={index} colNames={colNamesTruncated} rowData={item}/>))}
+                    {currentItems.map(
+                        (item, index) => (<TableRow key={index} header={header} rowData={item} maxColumnCount={MaxColumnCount}/>)
+                        )}
                 </tbody>
             </Table>
             <Pagination>

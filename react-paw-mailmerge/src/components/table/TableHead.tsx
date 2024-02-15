@@ -1,14 +1,19 @@
 import React from "react";
 
 interface TableHeadProps {
-    colNames: string[];
+    header: string[];
+    maxColumnCount: number;
 }
 
-const TableHead: React.FC<TableHeadProps> = ({colNames}) => {
+const TableHead: React.FC<TableHeadProps> = ({header, maxColumnCount}) => {
     return (
         <thead>
             <tr key='table-head'>
-                {colNames.map((colName) => (<th key={colName}>{colName}</th>))}
+                {header
+                .slice(0, maxColumnCount)
+                .map(
+                    (colName) => (<th key={colName}>{colName}</th>)
+                    )}
                 <th>Action</th>
             </tr>
         </thead>

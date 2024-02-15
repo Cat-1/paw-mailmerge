@@ -3,14 +3,17 @@ import Button from "react-bootstrap/Button"
 
 interface TableRowProps {
     rowData: Record<string, any>;
-    colNames: string[];
+    header: string[];
+    maxColumnCount: number;
 }
 
-const TableRow: React.FC<TableRowProps> = ({rowData, colNames}) => {
+const TableRow: React.FC<TableRowProps> = ({rowData, header, maxColumnCount}) => {
 
     return (
         <tr key={JSON.stringify(rowData)}>
-            {colNames.map(
+            {header
+            .slice(0, maxColumnCount)
+            .map(
                 (colName) => (<td key={colName}>{rowData[colName]}</td>)
                 )}
             <td>
