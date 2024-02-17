@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button"
+import { OpenTextTab } from "../../Helpers/OpenNewTabFunctions";
 
 interface TableRowProps {
     rowData: Record<string, any>;
@@ -17,7 +18,7 @@ const TableRow: React.FC<TableRowProps> = ({rowData, header, maxColumnCount}) =>
                 (colName) => (<td key={colName}>{rowData[colName]}</td>)
                 )}
             <td>
-                <Button type='button'>View Result</Button>
+                <Button type='button' onClick={() => {OpenTextTab(JSON.stringify(rowData))}}>View Result</Button>
             </td>
         </tr>
     )
