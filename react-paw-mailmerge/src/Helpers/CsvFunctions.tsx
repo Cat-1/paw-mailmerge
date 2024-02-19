@@ -130,6 +130,8 @@ export function DoMailMerge(rowObj: any, templateMessage: string):string{
 
         // All objects should have all fields (even if they're null)
         // So if the property lookup is null, that means the field is undefined in the CSV header
+        // I'm not sure if it's better to indicate that the field is wrong by replacing it with {{Undefined Field}}
+        // Or if we should just leave the field as is: {{ My Field That Doesn't Exist in the CSV }}
         const replacementVal = rowObj[fieldName] ?? UNDEFINED_FIELD;
         templateMessage = templateMessage.replaceAll(fields[index], replacementVal);
     }
@@ -137,7 +139,7 @@ export function DoMailMerge(rowObj: any, templateMessage: string):string{
 }
 
 function GetFields(template: string) : string[]{
-    const regex = /{{([^}]+)}}/g; // match on everything between the braces except for a closed brace
+    const regex = /{{([^{}]+)}}/g; // match on everything between the braces except for a closed brace
     const found = template.match(regex) ?? new Array<string>();
     let result = new Array<string>();
     for(let i = 0; i< (found.length); i++)
