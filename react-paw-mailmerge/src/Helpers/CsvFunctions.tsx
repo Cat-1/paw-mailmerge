@@ -1,7 +1,7 @@
 import { parse, ParseLocalConfig, ParseResult } from 'papaparse';
 
 const NULL_VAL_REPLACEMENT = "NA";
-
+const UNDEFINED_FIELD = "{{Undefined Field}}";
 export enum NullFieldOptionEnum{
     Ignore = "Ignore",
     ReplaceWithNa = "Replace"
@@ -92,12 +92,45 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
    return result;
 }
 
+export function CheckTemplate(templateMessage: string, headers:Array<string>|undefined):Array<string>{
+    let errorMessages = new Array<string>();
+    console.log("Headers: ", headers);
+    var fields = GetFields(templateMessage);
+    for(const i in fields){
+        console.log("FiledName: ", i, fields[i]);
+        if(headers === null || !headers?.includes(fields[i]?.replace("{{", "").replace("}}",""))){
+            errorMessages.push(`Undefined Field - ${fields[i]}`);
+        }
+    }
+
+    //Do we have any {{ or }} values that have not been identified as fields?
+    const dummyObj = {}
+    let modifiedMessage = DoMailMerge(dummyObj, templateMessage);
+    // all fields are going to be undefined because we've passed in an empty object
+    modifiedMessage = modifiedMessage.replaceAll(UNDEFINED_FIELD, ""); 
+    const doubleOpen = modifiedMessage.match(/{{/g);
+    const doubleClose = modifiedMessage.match(/}}/g);
+
+    if( (doubleOpen?.length ?? 0) !== 0){
+        errorMessages.push("Invalid Syntax -- Opening double braces ('{{') without appropriate closing double braces ('}}')");
+    }
+
+    if((doubleClose?.length ?? 0) !== 0){
+        errorMessages.push("Invalid Syntax -- Closing double braces ('}}') without appropriate opening double braces ('{{')");
+    }
+
+    return errorMessages;
+}
+
 export function DoMailMerge(rowObj: any, templateMessage: string):string{
     var fields = GetFields(templateMessage);
     rowObj = rowObj ?? {};
     for(const index in fields){
         var fieldName = fields[index].replace("{{","").replace("}}","");
-        const replacementVal = rowObj[fieldName] ?? NULL_VAL_REPLACEMENT;
+
+        // All objects should have all fields (even if they're null)
+        // So if the property lookup is null, that means the field is undefined in the CSV header
+        const replacementVal = rowObj[fieldName] ?? UNDEFINED_FIELD;
         templateMessage = templateMessage.replaceAll(fields[index], replacementVal);
     }
     return templateMessage;

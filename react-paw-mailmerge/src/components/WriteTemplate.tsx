@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react"
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
-import { CsvResult, EXTRA_COLUMNS } from "../Helpers/CsvFunctions";
+import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
@@ -31,6 +31,8 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         setPreviousInput(currentInput);
         setTemplate(currentInput);  // state lifting
         setEditingEnabled(false);
+        const errors = CheckTemplate(currentInput, parsedData?.header);
+        console.log(errors);
     }
 
     const handleTemplateDiscardChanges = () => {
