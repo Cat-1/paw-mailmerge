@@ -38,15 +38,18 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     }
 
     const addStringToTemplate = (field:string) => {
-        const markedUpValue = "{{"+field+"}} "; 
-        let cursorPosition = cursorRef.current ?? templateRef.current?.selectionStart ?? 0; // we need this in case someone presses two buttons without clicking back into the textbox
-        const substring1 = currentInput.substring(0, cursorPosition);
-        const substring2 = currentInput.substring(cursorPosition);
-        setCurrentInput(substring1 + markedUpValue + substring2);
+        if(editingEnabled){
+            const markedUpValue = "{{"+field+"}} "; 
+            let cursorPosition = cursorRef.current ?? templateRef.current?.selectionStart ?? 0; // we need this in case someone presses two buttons without clicking back into the textbox
+            const substring1 = currentInput.substring(0, cursorPosition);
+            const substring2 = currentInput.substring(cursorPosition);
+            setCurrentInput(substring1 + markedUpValue + substring2);
 
-        //update cursorRef and templateRef
-        cursorRef.current = cursorPosition + markedUpValue.length;
-        templateRef.current?.setSelectionRange(cursorPosition + markedUpValue.length, cursorPosition + markedUpValue.length);
+            //update cursorRef and templateRef
+            cursorRef.current = cursorPosition + markedUpValue.length;
+            templateRef.current?.setSelectionRange(cursorPosition + markedUpValue.length, cursorPosition + markedUpValue.length);
+            templateRef.current?.focus(); // reactivate the cursor in the text box
+        }
     }
 
     const buttons = parsedData?.header.map((field:string, index)=>{

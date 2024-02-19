@@ -92,4 +92,29 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
    return result;
 }
 
+export function DoMailMerge(rowObj: any, templateMessage: string):string{
+    var fields = GetFields(templateMessage);
+    rowObj = rowObj ?? {};
+    for(const index in fields){
+        var fieldName = fields[index].replace("{{","").replace("}}","");
+        const replacementVal = rowObj[fieldName] ?? NULL_VAL_REPLACEMENT;
+        templateMessage = templateMessage.replaceAll(fields[index], replacementVal);
+    }
+    return templateMessage;
+}
+
+function GetFields(template: string) : string[]{
+    const regex = /{{([^}]+)}}/g; // match on everything between the braces except for a closed brace
+    const found = template.match(regex) ?? new Array<string>();
+    let result = new Array<string>();
+    for(let i = 0; i< (found.length); i++)
+    {
+        if(!result.includes(found[i])){
+            result.push(found[i]); // we only need to add this once
+        }
+    }
+    return result;
+}
+
   export default ParseCsv;
+
