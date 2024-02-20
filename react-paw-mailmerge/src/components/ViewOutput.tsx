@@ -1,5 +1,5 @@
 import React from "react";
-import { CsvResult } from "../Helpers/CsvFunctions";
+import { CsvResult, DoMailMerge } from "../Helpers/CsvFunctions";
 import TableOutput from "./table/TableOutput";
 import { ZipAndDownload } from "../Helpers/ZipFunctions";
 import Button from "react-bootstrap/Button"
@@ -12,7 +12,7 @@ interface ViewOutputProps {
 const ViewOutput: React.FC<ViewOutputProps> = ({parsedData, template}) => {
     const handleDownloadAll = () => {
         if (parsedData !== null) {
-            ZipAndDownload(parsedData.data.map((row) => JSON.stringify(Object.values(row))));
+            ZipAndDownload(parsedData.data.map((row) => DoMailMerge(row, template)));
         }
     }
 
