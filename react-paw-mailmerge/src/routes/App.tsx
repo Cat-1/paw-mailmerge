@@ -12,16 +12,12 @@ function App() {
   const [key, setKey] = useState<string>('file-upload');  // maintains state for the UI tabs
   const [parsedData, setParsedData] = useState<CsvResult | null>(null);  // output of the CSV parser function
   const [template, setTemplate] = useState<string>("");  // mail merge template
-  const [reloadKey, setReloadKey] = useState<number>(0);
+  const [reloadKey, setReloadKey] = useState<number>(0); // trigger WriteTemplate component reload
 
   const resetTemplate = () => {
     setTemplate('');
-    // toggle reloadKey to trigger reload
-    if (reloadKey === 0) {
-      setReloadKey(1);
-    } else {
-      setReloadKey(0);
-    }
+    // toggle reloadKey to reload the entire WriteTemplate component
+    setReloadKey(reloadKey === 0 ? 1 : 0);
   }
 
   return (
