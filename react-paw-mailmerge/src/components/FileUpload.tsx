@@ -71,6 +71,12 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
     console.log(result);
   }
 
+  const onParsingFailure = (message: string, obj: object) => {
+    console.error(message);
+    console.error(obj);
+    addErrorMessage([message, JSON.stringify(obj)]);
+  }
+
   const handleFileUpload = () => {
     if (selectedFile) {
       console.log('Uploading file:', selectedFile);
@@ -78,13 +84,9 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
       const errors = validateFile(selectedFile);
       if (errors.length === 0) {
         // proceed to CSV parsing.
+        setSuccessMessage(`Successfully loaded ${selectedFile.name}.`)
         var options = getParserOpts(); // this may need to be adjusted
-        //TODO: Write Error callbacks
-        ParseCsv(selectedFile, options, onParsingSuccess, (message, obj) => {
-          console.error(message);
-          console.error(obj);
-        });
-    
+        ParseCsv(selectedFile, options, onParsingSuccess, onParsingFailure);
       } else {
         addErrorMessage(errors);
         console.error(errors);
