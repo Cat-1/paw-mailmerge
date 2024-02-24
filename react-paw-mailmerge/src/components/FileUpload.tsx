@@ -65,6 +65,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
     return errors;
   }
 
+  // ParseCsv callback
   const onParsingSuccess = (result: CsvResult) => {
     setParsedData(result);
     resetTemplate();
@@ -137,7 +138,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
                       />
                   </div>
                 </Form.Group>
-                {successMessage && <PopUpAlert variant={AlertVariant.success} message={successMessage} onClose={dismissSuccessAlert}/>}
+                {successMessage && <PopUpAlert variant={AlertVariant.success} messages={[successMessage]} onClose={dismissSuccessAlert}/>}
                 {errorMessages.length > 0 && <PopUpModal messages={errorMessages} onClose={dismissErrorModal}/>}
                 <Button onClick={handleFileUpload}>Upload File</Button>
             </Form>

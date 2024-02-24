@@ -14,14 +14,14 @@ export enum AlertVariant {
 
 interface PopUpAlertProps {
   variant: AlertVariant;
-  message: string;
+  messages: string[];
   onClose: () => void;
 }
 
-const PopUpAlert: React.FC<PopUpAlertProps> = ({variant, message, onClose }) => {
+const PopUpAlert: React.FC<PopUpAlertProps> = ({variant, messages, onClose }) => {
   return (
     <Alert variant={variant} onClose={onClose} dismissible>
-      {message}
+      {messages.map((message, index) => <p key = {index}>{message}</p>)}
     </Alert>
   );
 };
