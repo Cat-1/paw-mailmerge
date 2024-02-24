@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react"
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
 import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
+import PopUpAlert from "./PopUpAlert";
+import { AlertVariant } from "./PopUpAlert";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
@@ -15,6 +17,19 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     const [previousInput, setPreviousInput] = useState<string>('');  // when form changes are discarded, restore to previousInput
     const templateRef = useRef<HTMLTextAreaElement>(null);
     const cursorRef = useRef<number | null>(null); // tracks the cursor location
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
+
+    const addErrorMessage = (newItem: string | string[]) => {
+        if (Array.isArray(newItem)) {
+          setErrorMessages([...errorMessages, ...newItem]);
+        } else {
+          setErrorMessages([...errorMessages, newItem]);
+        }
+    }
+
+    const dismissErrorAlert = () => {
+        setErrorMessages([]);
+    }
 
     const handleTemplateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentInput(event.target.value);
@@ -32,6 +47,10 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         setTemplate(currentInput);  // state lifting
         setEditingEnabled(false);
         const errors = CheckTemplate(currentInput, parsedData?.header);
+        dismissErrorAlert();
+        if (errors.length > 0) {
+            addErrorMessage([`Template submitted. ${errors.length} issues identified.`, ...errors]);
+        }
         console.log(errors);
     }
 
@@ -71,6 +90,7 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
                         <Button type="button" variant="danger" onClick={handleTemplateDiscardChanges} hidden={!editingEnabled || previousInput === currentInput}>Discard Changes</Button>
                         <Button type="button" variant="warning" onClick={() => {setEditingEnabled(true)}} hidden={editingEnabled}>Edit Template</Button>
                     </div>
+                    {errorMessages.length > 0 && <PopUpAlert variant={AlertVariant.warning} messages={errorMessages} onClose={dismissErrorAlert}/>}
                     <Form.Control 
                         value={currentInput}
                         onClick={handleTemplateClick}
