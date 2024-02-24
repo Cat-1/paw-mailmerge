@@ -6,7 +6,7 @@ interface PopUpModalProps {
   onClose: () => void;
 }
 
-const PopUpAlert: React.FC<PopUpModalProps> = ({ messages, onClose }) => {
+const PopUpModal: React.FC<PopUpModalProps> = ({ messages, onClose }) => {
   return (
     <Modal show={true} onHide={onClose} backdrop="static" keyboard={true}>
       <Modal.Header closeButton>
@@ -24,4 +24,4 @@ const PopUpAlert: React.FC<PopUpModalProps> = ({ messages, onClose }) => {
   );
 };
 
-export default PopUpAlert;
+export default PopUpModal;
