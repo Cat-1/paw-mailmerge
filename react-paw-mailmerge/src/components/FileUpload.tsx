@@ -2,6 +2,9 @@ import React, { useState, ChangeEvent } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import InfoCard from './InfoCard';
 import { CsvOptions, CsvResult, ParseCsv } from '../Helpers/CsvFunctions';
+import PopUpAlert from './PopUpAlert';
+import { AlertVariant } from './PopUpAlert';
+import PopUpModal from './PopUpModal';
 
 interface FileUploadProps {
   setParsedData: React.Dispatch<React.SetStateAction<CsvResult | null>>;
@@ -12,6 +15,24 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
   const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const dismissSuccessAlert = () => {
+    setSuccessMessage(null);
+  }
+
+  const dismissErrorModal = () => {
+    setErrorMessages([]);
+  }
+
+  const addErrorMessage = (newItem: string | string[]) => {
+    if (Array.isArray(newItem)) {
+      setErrorMessages([...errorMessages, ...newItem]);
+    } else {
+      setErrorMessages([...errorMessages, newItem]);
+    }
+  }
 
   const getParserOpts = (): CsvOptions => {
     const opts = {
@@ -44,10 +65,17 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
     return errors;
   }
 
+  // ParseCsv callback
   const onParsingSuccess = (result: CsvResult) => {
     setParsedData(result);
     resetTemplate();
     console.log(result);
+  }
+
+  const onParsingFailure = (message: string, obj: object) => {
+    console.error(message);
+    console.error(obj);
+    addErrorMessage([message, JSON.stringify(obj)]);
   }
 
   const handleFileUpload = () => {
@@ -57,17 +85,15 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
       const errors = validateFile(selectedFile);
       if (errors.length === 0) {
         // proceed to CSV parsing.
+        setSuccessMessage(`Successfully loaded ${selectedFile.name}.`)
         var options = getParserOpts(); // this may need to be adjusted
-        //TODO: Write Error callbacks
-        ParseCsv(selectedFile, options, onParsingSuccess, (message, obj) => {
-          console.error(message);
-          console.error(obj);
-        });
-    
+        ParseCsv(selectedFile, options, onParsingSuccess, onParsingFailure);
       } else {
+        addErrorMessage(errors);
         console.error(errors);
       }
     } else {
+      addErrorMessage('No file selected');
       console.error('No file selected.');
     }
   };
@@ -89,7 +115,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
                             label='Data has header'
                             checked={dataHasHeader}
                             onChange={() => {setDataHasHeader(!dataHasHeader)}}
-                    />
+                            />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Empty field parsing option: </Form.Label>
@@ -101,7 +127,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
                       label='Parse as empty string'
                       checked={nullFieldOption === 'Ignore'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
-                    />
+                      />
                     <Form.Check
                       inline
                       type='radio'
@@ -109,9 +135,11 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
                       label='Replace with N/A'
                       checked={nullFieldOption === 'Replace'}
                       onChange={(event) => {setNullFieldOption(event.target.value)}}
-                    />
+                      />
                   </div>
                 </Form.Group>
+                {successMessage && <PopUpAlert variant={AlertVariant.success} messages={[successMessage]} onClose={dismissSuccessAlert}/>}
+                {errorMessages.length > 0 && <PopUpModal messages={errorMessages} onClose={dismissErrorModal}/>}
                 <Button onClick={handleFileUpload}>Upload File</Button>
             </Form>
         </div>
