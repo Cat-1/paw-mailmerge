@@ -39,7 +39,7 @@ const TableOutput: React.FC<TableOutputProps> = ({header, data, template}) => {
                 <TableHead header={header} maxColumnCount={MaxColumnCount}/>
                 <tbody>
                     {currentItems.map(
-                        (item, index) => (<TableRow key={index} header={header} rowData={item} maxColumnCount={MaxColumnCount}/>)
+                        (item, index) => (<TableRow key={index} header={header} rowData={item} maxColumnCount={MaxColumnCount} template={template}/>)
                         )}
                 </tbody>
             </Table>
