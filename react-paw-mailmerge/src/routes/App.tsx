@@ -12,6 +12,13 @@ function App() {
   const [key, setKey] = useState<string>('file-upload');  // maintains state for the UI tabs
   const [parsedData, setParsedData] = useState<CsvResult | null>(null);  // output of the CSV parser function
   const [template, setTemplate] = useState<string>("");  // mail merge template
+  const [reloadKey, setReloadKey] = useState<number>(0); // trigger WriteTemplate component reload
+
+  const resetTemplate = () => {
+    setTemplate('');
+    // toggle reloadKey to reload the entire WriteTemplate component
+    setReloadKey(reloadKey === 0 ? 1 : 0);
+  }
 
   return (
     <div>
@@ -23,10 +30,10 @@ function App() {
         className="mb-3"
         >
           <Tab eventKey="file-upload" title="Upload CSV">
-            <FileUpload setParsedData={setParsedData}/>
+            <FileUpload setParsedData={setParsedData} resetTemplate={resetTemplate}/>
           </Tab>
           <Tab eventKey="template" title="Compose Template">
-            <WriteTemplate parsedData={parsedData} template={template} setTemplate={setTemplate}/>
+            <WriteTemplate parsedData={parsedData} template={template} setTemplate={setTemplate} key={reloadKey}/>
           </Tab>
           <Tab eventKey="output" title="View Output">
             <ViewOutput parsedData={parsedData} template={template}/>

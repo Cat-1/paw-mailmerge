@@ -5,9 +5,10 @@ import { CsvOptions, CsvResult, ParseCsv } from '../Helpers/CsvFunctions';
 
 interface FileUploadProps {
   setParsedData: React.Dispatch<React.SetStateAction<CsvResult | null>>;
+  resetTemplate: () => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
+const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
   const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
@@ -43,6 +44,12 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
     return errors;
   }
 
+  const onParsingSuccess = (result: CsvResult) => {
+    setParsedData(result);
+    resetTemplate();
+    console.log(result);
+  }
+
   const handleFileUpload = () => {
     if (selectedFile) {
       console.log('Uploading file:', selectedFile);
@@ -52,7 +59,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData}) => {
         // proceed to CSV parsing.
         var options = getParserOpts(); // this may need to be adjusted
         //TODO: Write Error callbacks
-        ParseCsv(selectedFile, options, (result) => { setParsedData(result); console.log(result)}, (message, obj) => {
+        ParseCsv(selectedFile, options, onParsingSuccess, (message, obj) => {
           console.error(message);
           console.error(obj);
         });
