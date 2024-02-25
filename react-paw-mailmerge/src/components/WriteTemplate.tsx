@@ -7,11 +7,13 @@ import { AlertVariant } from "./PopUpAlert";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
-    template: string,
+    template: string;
     setTemplate: React.Dispatch<React.SetStateAction<string>>;
+    setTab: (k:string|null) => void;
+    nextPageKey: string;
 }
 
-const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate}) => {
+const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate, nextPageKey, setTab}) => {
     const [editingEnabled, setEditingEnabled] = useState<boolean>(true); // enable / disable form editing
     const [currentInput, setCurrentInput] = useState<string>('');
     const [previousInput, setPreviousInput] = useState<string>('');  // when form changes are discarded, restore to previousInput
@@ -50,8 +52,11 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         dismissErrorAlert();
         if (errors.length > 0) {
             addErrorMessage([`Template submitted. ${errors.length} issues identified.`, ...errors]);
+            console.log(errors);
         }
-        console.log(errors);
+        else if(currentInput.length> 0){
+            setTab(nextPageKey);
+        }
     }
 
     const handleTemplateDiscardChanges = () => {

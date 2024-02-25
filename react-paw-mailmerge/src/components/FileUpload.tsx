@@ -9,9 +9,11 @@ import PopUpModal from './PopUpModal';
 interface FileUploadProps {
   setParsedData: React.Dispatch<React.SetStateAction<CsvResult | null>>;
   resetTemplate: () => void;
+  nextPageKey: string;
+  setTab: (k:string|null) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) => {
+const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, nextPageKey, setTab}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
   const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
@@ -24,6 +26,10 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
 
   const dismissErrorModal = () => {
     setErrorMessages([]);
+  }
+
+  const sleep = (time:number) =>{
+    return new Promise(resolve => setTimeout(resolve, time));
   }
 
   const addErrorMessage = (newItem: string | string[]) => {
@@ -70,6 +76,9 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate}) =
     setParsedData(result);
     resetTemplate();
     console.log(result);
+    sleep(1000).then(() =>{ // give people an opportunity to see the success message
+      setTab(nextPageKey);
+    });
   }
 
   const onParsingFailure = (message: string, obj: object) => {
