@@ -1,11 +1,16 @@
 import { parse, ParseLocalConfig, ParseResult } from 'papaparse';
 
-const NULL_VAL_REPLACEMENT = "NA";
+export const NULL_VAL_REPLACEMENT = "NA";
 const UNDEFINED_FIELD = "{{Undefined Field}}";
 export enum NullFieldOptionEnum{
     Ignore = "Ignore",
     ReplaceWithNa = "Replace"
 }
+
+export interface MailMergeResult {
+    message: string,
+    errors: Array<string>
+};
 
 export interface CsvOptions {
     header: boolean;
@@ -105,11 +110,11 @@ export function CheckTemplate(templateMessage: string, headers:Array<string>|und
 
     //Do we have any {{ or }} values that have not been identified as fields?
     const dummyObj = {}
-    let modifiedMessage = DoMailMerge(dummyObj, templateMessage);
+    let mailMergeResult = DoMailMerge(dummyObj, templateMessage);
     // all fields are going to be undefined because we've passed in an empty object
-    modifiedMessage = modifiedMessage.replaceAll(UNDEFINED_FIELD, ""); 
-    const doubleOpen = modifiedMessage.match(/{{/g);
-    const doubleClose = modifiedMessage.match(/}}/g);
+    mailMergeResult.message = mailMergeResult.message.replaceAll(UNDEFINED_FIELD, ""); 
+    const doubleOpen = mailMergeResult.message.match(/{{/g);
+    const doubleClose = mailMergeResult.message.match(/}}/g);
 
     if( (doubleOpen?.length ?? 0) !== 0){
         errorMessages.push("Invalid Syntax -- Opening double braces ('{{') without appropriate closing double braces ('}}')");
@@ -122,7 +127,9 @@ export function CheckTemplate(templateMessage: string, headers:Array<string>|und
     return errorMessages;
 }
 
-export function DoMailMerge(rowObj: any, templateMessage: string):string{
+// Returns a merged string and an array of fields that have null values
+export function DoMailMerge(rowObj: any, templateMessage: string):MailMergeResult{
+    var errors = new Array<string>();
     var fields = GetFields(templateMessage);
     rowObj = rowObj ?? {};
     for(const index in fields){
@@ -131,9 +138,13 @@ export function DoMailMerge(rowObj: any, templateMessage: string):string{
         // All objects should have all fields (even if they're null)
         // So if the property lookup is null, that means the field is undefined in the CSV header
         const replacementVal = rowObj[fieldName] ?? UNDEFINED_FIELD;
+        if(replacementVal === "" || replacementVal === NULL_VAL_REPLACEMENT){
+            errors.push(`Null Field in Merge - ${fieldName}`);
+        }
         templateMessage = templateMessage.replaceAll(fields[index], replacementVal);
     }
-    return templateMessage;
+    
+    return {message: templateMessage, errors: errors} as MailMergeResult;
 }
 
 function GetFields(template: string) : string[]{

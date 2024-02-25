@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
 import PopUpAlert from "./PopUpAlert";
 import { AlertVariant } from "./PopUpAlert";
+import { NULL_VAL_REPLACEMENT } from "../Helpers/dist/CsvFunctions";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
@@ -74,7 +75,8 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     }
 
     const buttons = parsedData?.header.map((field:string, index)=>{
-        if(field !== EXTRA_COLUMNS){
+        // if there are null values in the heade row -- don't buttonize them.
+        if(field !== EXTRA_COLUMNS && field !== "" && field !== NULL_VAL_REPLACEMENT){
             return <Button type="button" value={field} onClick={() => addStringToTemplate(field)} key={index} id="{index}-button">{field}</Button>;
         }
         return "";
