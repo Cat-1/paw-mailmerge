@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
 import PopUpAlert from "./PopUpAlert";
 import { AlertVariant } from "./PopUpAlert";
-import { NULL_VAL_REPLACEMENT } from "../Helpers/dist/CsvFunctions";
+import { NULL_VAL_REPLACEMENT } from "../Helpers/CsvFunctions";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
