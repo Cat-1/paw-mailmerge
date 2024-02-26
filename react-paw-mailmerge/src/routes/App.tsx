@@ -20,20 +20,26 @@ function App() {
     setReloadKey(reloadKey === 0 ? 1 : 0);
   }
 
+  const handleTabSelect = (k:string|null) =>{
+    if(k !== null){
+      setKey(k);
+    }
+  }
+
   return (
     <div>
       <NavBar/>
       <div className="App">
         <Tabs
         activeKey={key}
-        onSelect={(k: string | null) => k && setKey(k)}
+        onSelect={(k)=>handleTabSelect(k)}
         className="mb-3"
         >
           <Tab eventKey="file-upload" title="Upload CSV">
-            <FileUpload setParsedData={setParsedData} resetTemplate={resetTemplate}/>
+            <FileUpload setParsedData={setParsedData} resetTemplate={resetTemplate} nextPageKey="template" setTab={handleTabSelect}/>
           </Tab>
           <Tab eventKey="template" title="Compose Template">
-            <WriteTemplate parsedData={parsedData} template={template} setTemplate={setTemplate} key={reloadKey}/>
+            <WriteTemplate parsedData={parsedData} template={template} setTemplate={setTemplate} key={reloadKey} nextPageKey="output" setTab={handleTabSelect} />
           </Tab>
           <Tab eventKey="output" title="View Output">
             <ViewOutput parsedData={parsedData} template={template}/>
