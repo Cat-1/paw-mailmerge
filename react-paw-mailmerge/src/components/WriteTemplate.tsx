@@ -22,14 +22,6 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     const cursorRef = useRef<number | null>(null); // tracks the cursor location
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-    const addErrorMessage = (newItem: string | string[]) => {
-        if (Array.isArray(newItem)) {
-          setErrorMessages([...errorMessages, ...newItem]);
-        } else {
-          setErrorMessages([...errorMessages, newItem]);
-        }
-    }
-
     const dismissErrorAlert = () => {
         setErrorMessages([]);
     }
@@ -49,11 +41,10 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         setPreviousInput(currentInput);
         setTemplate(currentInput);  // state lifting
         setEditingEnabled(false);
-        const errors = CheckTemplate(currentInput, parsedData?.header);
         dismissErrorAlert();
+        const errors = CheckTemplate(currentInput, parsedData?.header);
         if (errors.length > 0) {
-            addErrorMessage([`Template submitted. ${errors.length} issues identified.`, ...errors]);
-            console.log(errors);
+            setErrorMessages([`Template submitted. ${errors.length} issues identified.`, ...errors]);
         }
         else if(currentInput.length> 0){
             setTab(nextPageKey);
