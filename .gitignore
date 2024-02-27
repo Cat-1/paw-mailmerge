@@ -3,3 +3,4 @@
 __pycache__/
 .idea/
 react-paw-mailmerge/src/components/dist/
+node_modules/
