@@ -4,14 +4,17 @@ import Button from "react-bootstrap/Button";
 import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
 import PopUpAlert from "./PopUpAlert";
 import { AlertVariant } from "./PopUpAlert";
+import { NULL_VAL_REPLACEMENT } from "../Helpers/CsvFunctions";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
-    template: string,
+    template: string;
     setTemplate: React.Dispatch<React.SetStateAction<string>>;
+    setTab: (k:string|null) => void;
+    nextPageKey: string;
 }
 
-const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate}) => {
+const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate, nextPageKey, setTab}) => {
     const [editingEnabled, setEditingEnabled] = useState<boolean>(true); // enable / disable form editing
     const [currentInput, setCurrentInput] = useState<string>('');
     const [previousInput, setPreviousInput] = useState<string>('');  // when form changes are discarded, restore to previousInput
@@ -50,8 +53,11 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         dismissErrorAlert();
         if (errors.length > 0) {
             addErrorMessage([`Template submitted. ${errors.length} issues identified.`, ...errors]);
+            console.log(errors);
         }
-        console.log(errors);
+        else if(currentInput.length> 0){
+            setTab(nextPageKey);
+        }
     }
 
     const handleTemplateDiscardChanges = () => {
@@ -74,7 +80,8 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
     }
 
     const buttons = parsedData?.header.map((field:string, index)=>{
-        if(field !== EXTRA_COLUMNS){
+        // if there are null values in the heade row -- don't buttonize them.
+        if(field !== EXTRA_COLUMNS && field !== "" && field !== NULL_VAL_REPLACEMENT){
             return <Button type="button" value={field} onClick={() => addStringToTemplate(field)} key={index} id="{index}-button">{field}</Button>;
         }
         return "";
