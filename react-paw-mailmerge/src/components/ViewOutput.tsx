@@ -16,9 +16,15 @@ const ViewOutput: React.FC<ViewOutputProps> = ({parsedData, template}) => {
         }
     }
 
-    if (parsedData === null) {
+    if (parsedData === null || template.length === 0) {
         return (
-            <p>Please upload a CSV file to view results here.</p>
+            <div>
+                <p>To view mail merge results here, please complete the following task(s).</p>
+                <ul>
+                    {parsedData === null && <li>Upload a CSV file.</li>}
+                    {template.length === 0 && <li>Compose a non-empty template.</li>}
+                </ul>
+            </div>
         )
     } else {
         return (
