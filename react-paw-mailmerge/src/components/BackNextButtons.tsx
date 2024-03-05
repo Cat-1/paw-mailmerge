@@ -7,8 +7,6 @@ interface BackNextButtonsProps {
     setTab: (k:number) => void; 
 }
 
-
-
 const BackNextButtons: React.FC<BackNextButtonsProps> = ({currentPage, setTab}) => {
    function BackButton():JSX.Element {
         if(currentPage.hasPrev){
