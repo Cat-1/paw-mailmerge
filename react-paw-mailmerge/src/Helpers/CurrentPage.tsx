@@ -10,10 +10,10 @@ export class CurrentPage {
     }
 
     getNext():number{
-        return this.index++;
+        return this.index + 1;
     }
 
     getPrev():number{
-        return this.index--;
+        return this.index - 1;
     }
 }

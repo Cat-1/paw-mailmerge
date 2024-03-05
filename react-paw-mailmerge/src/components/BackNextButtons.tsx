@@ -10,7 +10,7 @@ interface BackNextButtonsProps {
 const BackNextButtons: React.FC<BackNextButtonsProps> = ({currentPage, setTab}) => {
    function BackButton():JSX.Element {
         if(currentPage.hasPrev){
-            const prev = currentPage.index - 1;
+            const prev = currentPage.getPrev();
             return <Button type="button" className="me-2" onClick={() => setTab(prev)}>Prev</Button>
         }
         return <></>;
@@ -18,7 +18,7 @@ const BackNextButtons: React.FC<BackNextButtonsProps> = ({currentPage, setTab}) 
 
     function NextButton():JSX.Element{
         if(currentPage.hasNext){
-            const next = currentPage.index + 1;
+            const next = currentPage.getNext();
             return <Button type="button" className="me-2" onClick={() => setTab(next)}>Next</Button>
         }
         return <></>;
