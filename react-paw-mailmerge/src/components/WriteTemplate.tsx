@@ -6,7 +6,9 @@ import PopUpAlert from "./PopUpAlert";
 import { AlertVariant } from "./PopUpAlert";
 import BackNextButtons from './BackNextButtons';
 import { NULL_VAL_REPLACEMENT } from "../Helpers/CsvFunctions";
+import TemplateHelpText from "./TemplateHelpText";
 import { CurrentPage } from "../Helpers/CurrentPage";
+
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
@@ -79,10 +81,10 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
 
     return (
         <div>
+            <TemplateHelpText/>
             <Form onSubmit={handleTemplateSubmit}>
                 <Form.Group className="mb-3">
-                    <Form.Label>Compose Template</Form.Label>
-                    <div className="mb-3">
+                    <div className="mt-3 mb-1">
                         <Button type="button" className="me-2" onClick={handleTemplateSubmit} hidden={!editingEnabled}>Save Template</Button>
                         <Button type="button" variant="danger" onClick={handleTemplateDiscardChanges} hidden={!editingEnabled || previousInput === currentInput}>Discard Changes</Button>
                         <Button type="button" variant="warning" onClick={() => {setEditingEnabled(true)}} hidden={editingEnabled}>Edit Template</Button>
@@ -92,7 +94,7 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
                         value={currentInput}
                         onClick={handleTemplateClick}
                         onChange={handleTemplateChange}
-                        placeholder="Hello {{name}}, ..."
+                        placeholder="Please write your template here. Example: Hello {{name}}, ..."
                         as="textarea" 
                         rows={6}
                         disabled={!editingEnabled}
