@@ -97,12 +97,25 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
    return result;
 }
 
+// Gets the {{fields}} from within the typed template
+function GetFields(template: string) : string[]{
+    const regex = /{{([^}]+)}}/g; // match on everything between the braces except for a closed brace
+    const found = template.match(regex) ?? new Array<string>();
+    let result = new Array<string>();
+    for(let i = 0; i< (found.length); i++)
+    {
+        if(!result.includes(found[i])){
+            result.push(found[i]); // we only need to add this once
+        }
+    }
+    return result;
+}
+
+// Check the template to ensure all braces are closed and that there are no invalid {{fields}}
 export function CheckTemplate(templateMessage: string, headers:Array<string>|undefined):Array<string>{
     let errorMessages = new Array<string>();
-    console.log("Headers: ", headers);
-    var fields = GetFields(templateMessage);
+    var fields = GetFields(templateMessage); // get all {{fields}} represented in the array
     for(const i in fields){
-        console.log("FiledName: ", i, fields[i]);
         if(headers === null || !headers?.includes(fields[i]?.replace("{{", "").replace("}}",""))){
             errorMessages.push(`Undefined Field - ${fields[i]}`);
         }
@@ -127,6 +140,8 @@ export function CheckTemplate(templateMessage: string, headers:Array<string>|und
     return errorMessages;
 }
 
+
+
 // Returns a merged string and an array of fields that have null values
 export function DoMailMerge(rowObj: any, templateMessage: string):MailMergeResult{
     var errors = new Array<string>();
@@ -147,18 +162,6 @@ export function DoMailMerge(rowObj: any, templateMessage: string):MailMergeResul
     return {message: templateMessage, errors: errors} as MailMergeResult;
 }
 
-function GetFields(template: string) : string[]{
-    const regex = /{{([^}]+)}}/g; // match on everything between the braces except for a closed brace
-    const found = template.match(regex) ?? new Array<string>();
-    let result = new Array<string>();
-    for(let i = 0; i< (found.length); i++)
-    {
-        if(!result.includes(found[i])){
-            result.push(found[i]); // we only need to add this once
-        }
-    }
-    return result;
-}
 
   export default ParseCsv;
 

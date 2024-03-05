@@ -4,17 +4,19 @@ import Button from "react-bootstrap/Button";
 import { CsvResult, EXTRA_COLUMNS, CheckTemplate } from "../Helpers/CsvFunctions";
 import PopUpAlert from "./PopUpAlert";
 import { AlertVariant } from "./PopUpAlert";
+import BackNextButtons from './BackNextButtons';
 import { NULL_VAL_REPLACEMENT } from "../Helpers/CsvFunctions";
+import { CurrentPage } from "../Helpers/CurrentPage";
 
 interface WriteTemplateProps {
     parsedData: CsvResult | null;
     template: string;
     setTemplate: React.Dispatch<React.SetStateAction<string>>;
-    setTab: (k:string|null) => void;
-    nextPageKey: string;
+    currentPage: CurrentPage;
+    setTab: (k:number) => void;
 }
 
-const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate, nextPageKey, setTab}) => {
+const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setTemplate, currentPage, setTab}) => {
     const [editingEnabled, setEditingEnabled] = useState<boolean>(true); // enable / disable form editing
     const [currentInput, setCurrentInput] = useState<string>('');
     const [previousInput, setPreviousInput] = useState<string>('');  // when form changes are discarded, restore to previousInput
@@ -45,9 +47,6 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
         const errors = CheckTemplate(currentInput, parsedData?.header);
         if (errors.length > 0) {
             setErrorMessages([`Template submitted. ${errors.length} issues identified.`, ...errors]);
-        }
-        else if(currentInput.length> 0){
-            setTab(nextPageKey);
         }
     }
 
@@ -102,6 +101,7 @@ const WriteTemplate: React.FC<WriteTemplateProps> = ({parsedData, template, setT
                 </Form.Group>
             </Form>
            <div >{buttons}</div>
+           <BackNextButtons currentPage={currentPage} setTab={setTab}></BackNextButtons>
         </div>
     )
 }

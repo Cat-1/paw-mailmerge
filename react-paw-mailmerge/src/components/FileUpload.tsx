@@ -5,15 +5,17 @@ import { CsvOptions, CsvResult, ParseCsv } from '../Helpers/CsvFunctions';
 import PopUpAlert from './PopUpAlert';
 import { AlertVariant } from './PopUpAlert';
 import PopUpModal from './PopUpModal';
+import BackNextButtons from './BackNextButtons';
+import { CurrentPage } from '../Helpers/CurrentPage';
 
 interface FileUploadProps {
   setParsedData: React.Dispatch<React.SetStateAction<CsvResult | null>>;
   resetTemplate: () => void;
-  nextPageKey: string;
-  setTab: (k:string|null) => void;
+  currentPage: CurrentPage;
+  setTab: (k:number) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, nextPageKey, setTab}) => {
+const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, currentPage, setTab}) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dataHasHeader, setDataHasHeader] = useState<boolean>(true);
   const [nullFieldOption, setNullFieldOption] = useState<string>('Ignore');
@@ -26,10 +28,6 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, ne
 
   const dismissErrorModal = () => {
     setErrorMessages([]);
-  }
-
-  const sleep = (time:number) =>{
-    return new Promise(resolve => setTimeout(resolve, time));
   }
 
   const addErrorMessage = (newItem: string | string[]) => {
@@ -76,9 +74,6 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, ne
     setParsedData(result);
     resetTemplate();
     console.log(result);
-    sleep(1000).then(() =>{ // give people an opportunity to see the success message
-      setTab(nextPageKey);
-    });
   }
 
   const onParsingFailure = (message: string, obj: object) => {
@@ -152,6 +147,7 @@ const FileUpload: React.FC<FileUploadProps> = ({setParsedData, resetTemplate, ne
                 <Button onClick={handleFileUpload}>Upload File</Button>
             </Form>
         </div>
+        <BackNextButtons currentPage={currentPage} setTab={setTab}></BackNextButtons>
     </div>
   );
 };
