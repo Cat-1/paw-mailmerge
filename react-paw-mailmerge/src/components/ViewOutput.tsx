@@ -20,10 +20,14 @@ const ViewOutput: React.FC<ViewOutputProps> = ({parsedData, template, currentPag
         }
     }
 
-    if (parsedData === null) {
+    if (parsedData === null || template.length === 0) {
         return (
             <div>
-                <p>Please upload a CSV file to view results here.</p>
+                <p>To view mail merge results here, please complete the following task(s).</p>
+                <ul>
+                    {parsedData === null && <li>Upload a CSV file.</li>}
+                    {template.length === 0 && <li>Compose a non-empty template.</li>}
+                </ul>
                 <BackNextButtons currentPage={currentPage} setTab={setTab}></BackNextButtons>
             </div>
         )
