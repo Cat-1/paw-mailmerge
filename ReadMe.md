@@ -33,7 +33,7 @@ npm install
 6. Build react application.
 
 ```
-npm build 
+npm run build 
 ```
 
 7. Navigate back to root directroy.
