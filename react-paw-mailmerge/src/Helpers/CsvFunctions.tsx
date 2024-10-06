@@ -99,7 +99,7 @@ function NormalizeJsonObjectResult(parsedCsv:ParseResult<object>, options:CsvOpt
 
 // Gets the {{fields}} from within the typed template
 function GetFields(template: string) : string[]{
-    const regex = /{{([^}]+)}}/g; // match on everything between the braces except for a closed brace
+    const regex = /{{([^{{^}]+)}}/g; // match on everything between the braces except for a closed brace
     const found = template.match(regex) ?? new Array<string>();
     let result = new Array<string>();
     for(let i = 0; i< (found.length); i++)
@@ -115,6 +115,8 @@ function GetFields(template: string) : string[]{
 export function CheckTemplate(templateMessage: string, headers:Array<string>|undefined):Array<string>{
     let errorMessages = new Array<string>();
     var fields = GetFields(templateMessage); // get all {{fields}} represented in the array
+    console.log(fields);
+
     for(const i in fields){
         if(headers === null || !headers?.includes(fields[i]?.replace("{{", "").replace("}}",""))){
             errorMessages.push(`Undefined Field - ${fields[i]}`);
